@@ -1,0 +1,230 @@
+</br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="#">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="index.php?p=4">Workshops</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                        BCW
+                                </li>
+                </ul>
+            </div>
+</div>
+
+<div id="middle100"><!--middle start -->
+<div id="middle"><!--middle -->
+</br>
+<h3>Six weeks basic computing workshop</h3>
+</br>
+
+<h4>
+    Week 1: Linux/Unix/OSX environment
+</h4>
+($ signs at the begining of the command lines indicate after $ is a command)
+<ol>
+<li>Connect to the cluster using ssh.</li>
+
+<pre>$ ssh your_user@ghpcc06.umassrc.org </pre>
+<li>Clean the terminal.</li>
+<pre> clear </pre>
+<li>Lists the content of the directory. ~/ means your home directory.</li>
+<pre>$ ls </pre>
+<pre>$ ls ~/</pre>
+<li>Exit from the cluster or your terminal</li>
+<pre> Ctrl+c</pre>
+<pre>$ exit</pre>
+<li>Break a command</li>
+<pre> Ctrl+c</pre>
+<li>Print working directory</li>
+<pre>$ pwd</pre>
+<li>Create a new directory</li>
+<pre>$ mkdir example</pre>
+<pre>$ mkdir /home/your_user/example</pre>
+<li>Change directory</li>
+<pre>$ cd example</pre>
+<pre>$ cd /home/your_user/example</pre>
+<li>go to one directory above</li>
+<pre>$ cd ..</pre>
+<li>go to your home directory</li>
+<pre>$ cd</pre>
+<pre>$ cd ~/</pre>
+<li>List directory with other information like file/directory privilages, data/time, size etc.</li>
+<pre>$ ls -l</pre>
+<li>Lists root, home, bin directories.</li>
+<pre>$ ls /</pre>
+<pre>$ ls /home</pre>
+<pre>$ ls /bin</pre>
+<li>List your home directory with fullpath</i>
+<pre>$ ls /home/your_user</pre>
+<li>Get help of a command</i>
+<pre>$ ls --help</pre>
+<pre>$ man ls #(exit with q)</pre>
+<li>list files with wildcard characther</p>
+<pre>ls ls /bin/*cat*</pre>
+<pre>ls *.txt</pre>
+<pre>ls *files*</pre>
+<li>Create and empty file</li>
+<pre>$ cd ~/example</pre>
+<pre>$ touch myfile.txt</pre>
+<pre>$ ls -l myfile.txt</pre>
+<li>Change the permission of a file or a directory</li>
+<pre>$ chmod 777 myfile.txt</pre>
+<pre>$ ls -l myfile.txt</pre>
+It is easy to think of the permission settings as a series of bits (which is how the computer thinks about them). Here's how it works:
+<pre>rwx rwx rwx = 111 111 111
+rw- rw- rw- = 110 110 110
+rwx --- --- = 111 000 000
+
+and so on...
+
+rwx = 111 in binary = 7
+rw- = 110 in binary = 6
+r-x = 101 in binary = 5
+r-- = 100 in binary = 4</pre>
+Some examples:
+<pre>
+Value	Meaning
+777
+
+(rwxrwxrwx) No restrictions on permissions. Anybody may do anything. Generally not a desirable setting.
+
+755
+
+(rwxr-xr-x) The file's owner may read, write, and execute the file. All others may read and execute the file. This setting is common for programs that are used by all users.
+
+700
+
+(rwx------) The file's owner may read, write, and execute the file. Nobody else has any rights. This setting is useful for programs that only the owner may use and must be kept private from others.
+
+666
+
+(rw-rw-rw-) All users may read and write the file.
+
+644
+
+(rw-r--r--) The owner may read and write a file, while all others may only read the file. A common setting for data files that everybody may read, but only the owner may change.
+
+600
+
+(rw-------) The owner may read and write a file. All others have no rights. A common setting for data files that the owner wants to keep private.
+
+</pre>
+
+<li>Learn vi</li>
+<pre>
+vi editor: (Try the functions below especially the once we didn't use in the session)
+i insert text from current cursor position;
+esc return to command mode; used by most change commands
+q! quit the vi without saving
+wq! quit vi with saving
+I insert text at start of line;
+o opens a new line below cursor
+O opens a new line above cursor
+J joins next line to end of current line
+r replace character under cursor
+R enters replace (typeover) mode;
+s substitute character under cursor with one or many;
+S substitute whole line;
+a appends after cursor;
+A appends after current line;
+cw change current word starting at cursor;
+C change to end of line;
+dw delete current word starting at cursor
+dd delete current line; delete 3 lines (3dd)
+D delete to end of line
+h, j, k, l move the cursor around. h=left, j=down, k=up, l=right
+^F move forward full screen
+^B move back full screen
+^U move up half screen
+^D move down half screen
+^L clear and redraw screen (R)
+w move forward to beginning of next word
+W move forward to beginning of next word after space
+e move cursor to end of word
+E move cursor to next space
+$ move cursor to end of line (3$ moves to end of third line)
+b move cursor to beginning of word
+B move cursor to previous space
+0 (zero) move cursor to beginning of line
+</pre>
+<li>Create the file below with vi</li>
+<pre>$ cd ~/example
+$ vi myfile.txt </pre>
+<pre>
+1	human	        30 
+2	mouse	        20
+3	zebrafish	15
+4	yeast	         5
+5	fly	        25
+</pre>
+<li>Look at your file</li>
+<pre>$ cd ~/example<br>$ more myfile.txt</pre>
+<li>Look at your file with fullpath</li>
+<pre>$ more /home/ak97w/example/myfile.txt</pre>
+<pre>$ less /home/ak97w/example/myfile.txt</pre>
+<li>Look first ten lines of your file</li>
+<pre>$ head myfile.txt</pre>
+<li>Look first two lines of your file</li>
+<pre>$ head -n 2 myfile.txt</pre>
+<li>Look last ten lines of your file</li>
+<pre>$ tail myfile.txt</pre>
+<li>Look last 3 lines of your file</li>
+<pre>$ tail -n 3 myfile.txt</pre>
+<li>copy a file</li>
+<pre>$ mkdir backup</pre>
+<pre>$ cp myfile.txt backup/mynewfile.txt</pre>
+<li>copy a directory</li>
+<pre>$ cp -r backup newbackup</pre>
+<li>mova a file(rename)</li>
+<pre>mv backup/mynewfile.txt backup/mynewname.txt</pre>
+<li>move a directory</li>
+<pre>$ mv newbackup movedbackup</pre>
+<li>A little bit awk. Show second column of a file</li>
+<pre>$ awk '{print $2}' myfile.txt</pre>
+<li>Switch second and third column of a file and print to the screen</li>
+<pre>$ awk '{print $3"\t"$2}' myfile.txt</pre>
+<li>Switch second and third column of a file and write to a file</li>
+<pre>$ awk '{print $3"\t"$2}' myfile.txt > myswithedfile.txt</pre>
+<li>Get the detailed list of the files and print only permission column</li>
+<pre>ls -l|awk '{print $1}'</pre>
+<li>Find a file</li>
+<pre>find /home/your_user -name *.txt</pre>
+<pre>find --help</pre>
+</ol>
+</br></br>
+For more vi tutorials and cheat sheet;</br>
+ <a href="http://www.unix-manuals.com/tutorials/vi/vi-in-10-1.html">http://www.unix-manuals.com/tutorials/vi/vi-in-10-1.html
+</a></br>
+ <a href="http://www.viemu.com/vi-vim-cheat-sheet.gif">http://www.viemu.com/vi-vim-cheat-sheet.gif</a></br>
+ <a href="http://lmgtfy.com/?q=vi+tutorial">http://lmgtfy.com/?q=vi+tutorial</a></br>
+</br>
+For linux commands and cheat sheet;</br>
+ <a href="http://www.ee.surrey.ac.uk/Teaching/Unix/">http://www.ee.surrey.ac.uk/Teaching/Unix/</a></br>
+ <a href="http://www.pixelbeat.org/cmdline.html">http://www.pixelbeat.org/cmdline.html</a></br>
+ <a href="http://files.fosswire.com/2007/08/fwunixref.pdf">http://files.fosswire.com/2007/08/fwunixref.pdf</a></br>
+</br>
+</br>
+<p>
+<h3>Your homework (deadline: Jul 17, Thursday 17:00pm):</h3></br> 
+<ol>
+<li>Please create “homework” directory in your home folder.</li></br>
+<li>Create a week1 directory under homework</li></br>
+<li>Create a tab separated file under week1 named mylibrary.bed that includes</li></br>
+<pre>
+chr3	5000 6000	Fgf21	0 +    
+chr1	1000 2000	Cyc1	0 +    
+chr2	3000 4000	Tdp43	0 - 
+</pre>
+<li>write an awk command to show only gene names and write the output into genenames.txt in the same folder. Write the awk command into Readme.txt file in the same folder.</li></br> 
+</ol>
+</p>
+</div>
+</div>

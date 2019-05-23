@@ -1,0 +1,7 @@
+http://bioinfo.umassmed.edu/pub/data/ucsc.gtf
+http://bioinfo.umassmed.edu/pub/data/ucsc_into_genesymbol.rsem
+http://bioinfo.umassmed.edu/pub/data/mm10.fa
+http://bioinfo.umassmed.edu/pub/data/exper_rep1.2.fq
+http://bioinfo.umassmed.edu/pub/data/exper_rep1.1.fq
+http://bioinfo.umassmed.edu/pub/data/control_rep1.2.fq
+http://bioinfo.umassmed.edu/pub/data/control_rep1.1.fq

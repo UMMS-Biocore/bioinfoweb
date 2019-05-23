@@ -1,0 +1,25 @@
+samples	cond1	cond2	cond3
+chow.dbl.rep1	2
+chow.dbl.rep2	2
+chow.dbl.rep3	2
+chow.J1c.rep1
+chow.J1c.rep2
+chow.J1c.rep3
+chow.J2c.rep1
+chow.J2c.rep2
+chow.J2c.rep3
+chow.wt.rep1	1	1	1
+chow.wt.rep2	1	1	1
+chow.wt.rep3	1	1	1
+hfd.dbl.rep1		2	
+hfd.dbl.rep2		2	
+hfd.dbl.rep3		2	
+hfd.J1c.rep1		
+hfd.J1c.rep2
+hfd.J1c.rep3
+hfd.J2c.rep1
+hfd.J2c.rep2
+hfd.J2c.rep3
+hfd.wt.rep1			2
+hfd.wt.rep2			2
+hfd.wt.rep3			2

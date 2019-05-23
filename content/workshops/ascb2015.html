@@ -1,0 +1,173 @@
+<br>
+<br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="http://bioinfo.umassmed.edu/index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="http://bioinfo.umassmed.edu/index.php?p=35">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                       ASCB 2015 Workshop Material
+                                </li>
+                </ul>
+            </div>
+</div>
+
+
+<div class="post-5027 page type-page status-publish hentry instock">
+<div class="entry">
+<h4 id="toc">Table of contents</h4>
+<ul>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#expectedlearningoutcome">expected learning outcome</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#material">workshop material</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#gettingstarted">getting started</a></li>
+</ul>
+<ul>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#part1">Quantification and Differential gene expression analysis</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#p1e1">exercise 1: Upload files to galaxy and prepare index files</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#p1e2">exercise 2: Quantify the genes with RSEM</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=35#p1e3">exercise 3: Differential gene expression analysis with DESeq</a></li>
+</ul>
+
+
+<section id="material"/>
+	<br/>
+<br/>
+<br/>
+
+
+<h4>Workshop Material</h4>
+<ul>
+<li><a href="/content/workshops/material/ASCB2015.pdf">Click</a> to download slides(pdf)</li>
+<li><a href="/content/workshops/material/ascb2015.R">Click</a> to download R scripts(R)</li>
+<li><a href="/content/workshops/material/funcs.R">Click</a> to download extra R functions (R)</li>
+<li><a href="/content/workshops/material/data.tsv">Click</a> to download the data(tsv)</li>
+</ul>
+
+<section id="expectedlearningoutcome"/>
+	<br/>
+<br/>
+<br/>
+
+<h4>expected learning outcome</h4>
+<p>To understand the basics of RNA-Seq data, how to use RNA-Seq for different objectives and to familiarize yourself with some standard software packages for such analysis.</p>
+<center><img src="content/pdf2015fall/focus_workflow_week4.jpg"></center>
+<section id="gettingstarted"/>
+<br/>
+<br/>
+<br/>
+<h4>getting started</h4>
+<p>Sample pooling has revolutionized sequencing. It is now possible to sequence 10s of samples together. Different objectives require different sequencing depths. Doing differential gene expression analysis requires less sequencing depth than transcript reconstruction so when pooling samples it is critical to keep the objective of the experiment in mind.</p>
+<p>In this activity we will use subsets of experimentally generated datasets. One dataset was generated for differential gene expression analysis while the other towards transcript annotation.</p>
+<p>For quantification we will use a set of data generated from the same strain as the genome reference mouse (C57BL/6J). We selected three replicates from control (wild type) and three from a knock-out strain. The idea is to find genes that are in the same pathway as the gene that were knock out. We will use a reduced genome consisting of the first 9.5 million bases of mouse chromosome 16 and the first 50.5 million bases of chromosome 7.</p>
+</section>
+<br/>
+<br/>
+<br/>  
+<section id="part1"/>
+<br/>
+<br/>
+<br/>
+<h2>Quantification and differential gene expression analysis</h2>
+<p>The main goal of this activity is to go through a standard method to obtain gene expression values and perform differential gene expression analysis from an RNA-Seq experiment.</p>
+<p>We will start uploading the data to galaxy and prepare index files for RSEM. We will then perform gene quantification using the RSEM program and finally differential gene expression analysis of the estimated counts using DESeq.</p>
+
+<p>&nbsp;</p>
+<h2>Before you start</h2>
+Please click the link below to go to our galaxy mirror; </br>
+<p>
+<a href="http://52.0.249.234" target="_blank">Galaxy Mirror  --> <img src="content/workshops/img/galaxylogo.png" height=100 width=200></a>
+</p>
+
+<p>1. Register to galaxy using the link below with your email and use your username and password the same.  </p>
+<pre> {username}@domainname</pre>
+<center><img src="content/workshops/img/0.register.png" height="300" width="600"></center>
+
+<section id="p1e1"/>
+<br/>
+<br/>
+<br/>
+<h3>exercise 1: Upload files to galaxy and prepare index files</h3>
+<p>Both TopHat and RSEM rely on bowtie to perform read alignment (similar to the BWA aligner you used in genome assembly tutorial). Bowtie like BWA uses very efficient genome compression algorithm (Burrows-Wheeler transform) that allows for quick matching of sequences with less than 3 missmatches. To use these alignments it is necessary to create the BW transform of our genome before mapping reads. The bowtie-build2 program in the Bowtie distribution creates the BW index. Change your directory to genome.quantification. Invoke the BW transform on the mm10.fa file found in the links below together with other files we are going to use:</p>
+<p>1. File list</p>
+<pre>http://bioinfo.umassmed.edu/pub/data/ucsc.gtf</br>
+http://bioinfo.umassmed.edu/pub/data/ucsc_into_genesymbol.rsem</br>
+http://bioinfo.umassmed.edu/pub/data/mm10.fa</br>
+http://bioinfo.umassmed.edu/pub/data/exper_rep1.2.fq</br>
+http://bioinfo.umassmed.edu/pub/data/exper_rep1.1.fq</br>
+http://bioinfo.umassmed.edu/pub/data/control_rep1.2.fq</br>
+http://bioinfo.umassmed.edu/pub/data/control_rep1.1.fq</pre>
+
+<center><img src="content/workshops/img/1.get_data_upload_file.png" height="300" width="180">
+<img src="content/workshops/img/2.file_upload.png" height="300" width="400">
+<img src="content/workshops/img/3.files_in_history.png" height="300" width="180"></center>
+
+<p>2. Build RSEM reference files</p>
+<p>We named the genome mm10 (following the <a title="UCSC " href="http://genome.ucsc.edu/cgi-bin/hgGateway" target="_blank">UCSC genome browser naming convention</a>. Although we named it similarly to the full genome, this sequence file only contains a very small region of the mouse genome. Our alignment database will be called mm10, and will include partial sequences for chromosomes 7 and 16.</p>
+<p>In addition we also will prepare the transcriptome for <a title="RSEM README" href="http://deweylab.biostat.wisc.edu/rsem/README.html" target="_blank">RSEM</a> alignment. RSEM will align directly to the set of transcripts included (<em>ucsc.gtf</em> file). The transcript file was downloaded directly from the UCSC table browser. The file does not contain the information necessary to map isoforms to genes, we therefore compiled a table,
+<em>ucsc_into_genesymbol.rsem</em> that contains this information. To generate the necessary index files use the command below. Please not that the \ is used to span multiple lines:</p>
+
+
+<center><img src="content/workshops/img/4.Make_RSEM_index_form.png" height="500" width="600"></center>
+<p>Prepared reference files should look like this, if you click the corresponding view data (eye) button in the history:</p>
+<center><img src="content/workshops/img/5.RSEM_REF_prepared.png" height="400" width="600"></center>
+
+<br>
+
+<section id="p1e2"/>
+<br/>
+<br/>
+<br/>
+
+<h3>exercise 2 Quantify the genes with RSEM</h3>
+<p><a title="RSEM" href="http://deweylab.biostat.wisc.edu/rsem/" target="_blank">RSEM</a> depends on an existing annotation and will only scores transcripts that are present in the given annotation file. 
+</p>
+<p>The first step is to prepare the transcript set that we will quantify. We selected the <a title="ucsc gene table" href="http://genome.ucsc.edu/cgi-bin/hgTables?hgsid=359712943&clade=mammal&org=Mouse&db=mm10&hgta_group=genes&hgta_track=knownGene&hgta_table=0&hgta_regionType=genome&position=chr6%3A113001853-113229210&hgta_outputType=bed&hgta_outFileName=hg19.ensembl.bed" target="_blank">UCSC genes</a> which is a very comprehensive, albeit a bit noisy dataset. As with all the data in this activity we will only use the subset of the genes that map to the genome regions we are using.</p>
+<h4>2.1 Calculate expression</h4>
+<p>RSEM now is ready to align and then attempt to perform read assignment and counting for each isoform in the file provided above. You must process each one of the 2 libraries:</p>
+<p></p> 
+<center><img src="content/workshops/img/6.exper_calculate_expression.png" height="500" width="600"></center>
+<p></p>
+<p>Please calculate the expression for control library. Use "control" for naming.</p>
+
+<p>You should take the time to familiarize yourself with the output</p>
+
+
+<h4>2.2 Join the output files</h4>
+<center><img src="content/workshops/img/8.join_two_datasets.png" height="300" width="600"></center>
+<h4>2.3 Cut the estimated count values</h4>
+<center><img src="content/workshops/img/9.cut_columns.png" height="180" width="600"></center>
+<h4>2.4 Filter out low abundant genes:</h4>
+<center><img src="content/workshops/img/10.filter_data.png" height="180" width="600"></center>
+Your history and resulting table should like below;
+<center><img src="content/workshops/img/12.Resulting_table.png" height="600" width="300">
+<img src="content/workshops/img/11.history.png" height="600" width="180">
+</center>
+<p>You should now take the time to inspect these tables, find genes that look affected by the experiment.</p>
+<br/>
+<section id="p1e2"/>
+<br/>
+<br/>
+<br/>
+
+<h3>exercise 3: Differential gene expression analysis with DESeq</h3>
+<p>DESeq is an R package available via Bioconductor and is designed to normalize count data from high-throughput sequencing assays such as RNA-Seq and test for differential expression.</p>
+Please click the link below to go to our RStudio; </br>
+<p>
+<a href="http://goo.gl/R0vRtN" target="_blank">RStudio --> <img src="content/workshops/img/rstudio.png" height="100" width="200"></a>
+</p>
+<?php include("workshop.html");?>
+
+</p>
+
+
+
+</div> 
+</div> 
+
+
+</body></html>

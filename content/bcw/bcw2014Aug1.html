@@ -1,0 +1,104 @@
+</br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="#">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="index.php?p=4">Workshops</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                        BCW
+                                </li>
+                </ul>
+            </div>
+</div>
+
+<div id="middle100"><!--middle start -->
+<div id="middle"><!--middle -->
+</br>
+<h3>Six weeks basic computing workshop</h3>
+</br>
+
+<h4>
+    Week 4: samtools, bowtie2, bedtools multicov, igv
+</h4>
+($ signs at the begining of the command lines indicate after $ is a command)
+<ol>
+<li>Connect to the cluster using ssh.</li>
+
+<pre>$ ssh your_user@ghpcc06.umassrc.org </pre>
+<li>Prepare your working directory.</li>
+<pre>$ clear </pre>
+<pre>$ mkdir ~/class/week4</pre>
+<pre>$ cd ~/class/week4</pre>
+<li>
+ Create necessary directories
+</li>
+<pre>$ mkdir seq </pre>
+<pre>$ mkdir index </pre>
+<pre>$ mkdir annot </pre>
+<li>
+ Copy example files to their directories
+</li>
+<pre>$ cp /share/data/umw_biocore/genome_data/mousetest/mm10/example/seq/* seq/. </pre>
+<pre>$ cp /share/data/umw_biocore/genome_data/mousetest/mm10/example/annot/* annot/. </pre>
+<pre>$ cp /share/data/umw_biocore/genome_data/mousetest/mm10/example/index/* index/. </pre>
+<li>
+ First run fastqc for quality checks of the libraries
+</li>
+<pre>$ mkdir fastqc_results</pre>
+<pre>$ module load fastqc/0.10.1</pre>
+<pre>$ fastqc seq/example_qc.fastq -o fastqc_results</pre>
+<li>
+ Now lets build an index file for mm10 example genome
+</li>
+<pre>$ module load bowtie2/2-2.1.0</pre>
+<pre>$ bowtie2-build index/mm10.fa index/mm10</pre>
+<li>
+ We can now align our sequences to the reference genome 
+</li>
+<pre>mkdir mappings</pre>
+<pre>$ bowtie2 -N 1 -k 1 --no-unal -x index/mm10 -1 seq/control_rep1_R1.fastq -2 seq/control_rep1_R2.fastq > mappings/control_rep1.sam</pre>
+<li>
+ To be able to find read counts per gene, we need to convert sam file to bam file and need sort and index. Since bedtools requires sorted and indexed files to be able to find gene counts.
+</li>
+<pre> $ module load samtools/0.0.19 </pre> 
+<pre> $ samtools view -bT index/mm10.fa mappings/control_rep1.sam > mappings/control_rep1.bam </pre> 
+<pre> $ samtools sort mappings/control_rep1.bam mappings/control_rep1.sorted</pre> 
+<pre> $ samtools index mappings/control_rep1.sorted.bam</pre> 
+<li>Now we can count number of reads per genes</li>
+<pre>$ bedtools multicov -p -F -bams mappings/control_rep1.sorted.bam -bed annot/mm10ref.bed | awk '{print $4"\t"$13}' > readcounts.txt </pre>
+<li>To visualize a bam file in igv please downlaod igv program</li>
+<p>Mac Users:
+<a href="https://galaxyweb.umassmed.edu/galaxy/ak97w/igv/IGV_2.3.34.app.zip">IGV_2.3.34.app.zip</a><br>
+</p>
+<p>Windows/Linux Users:
+<a href="https://galaxyweb.umassmed.edu/galaxy/ak97w/igv/IGV_2.3.34.zip">IGV_2.3.34.zip</a><br>
+</p>
+<li>Download bam file and index file to your computer</li>
+<li>Start igv and select mouse(mm10)</li>
+<li>Load the bam file</li>
+
+<p>
+<h3>Your homework (deadline: Aug 6, Thursday 17:00pm):</h3></br> 
+<ol>
+<li>Please create “homework/week4” directory in your home folder.</li></br>
+<li>Download all paired end sequence files from /share/data/umw_biocore/genome_data/mousetest/mm10/example/seq/.</li></br>
+<li>
+Map them those sequence files to mm10 genome sequence file is located in the following directory /share/data/umw_biocore/genome_data/mousetest/mm10/example/index
+</li></br>
+<li>
+  Count the number of reads per isoform and report them in a 8 column count file that includes following columns; gene_id gene_len control_rep1 control_rep2 ...
+</li>
+
+<li>Write all the command/s you used into Readme.txt file in the same folder.</li></br> 
+</ol>
+</p>
+</div>
+</div>

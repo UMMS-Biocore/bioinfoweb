@@ -1,0 +1,186 @@
+</br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="#">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="index.php?p=4">Workshops</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                        BCW
+                                </li>
+                </ul>
+            </div>
+</div>
+
+<div id="middle100"><!--middle start -->
+<div id="middle"><!--middle -->
+</br>
+<h3>Six weeks basic computing workshop</h3>
+</br>
+
+<h4>
+    Week 2: Awk (if), sort, grep, rm commands, UCSC Table Browser and bed file
+</h4>
+($ signs at the begining of the command lines indicate after $ is a command)
+<ol>
+<li>Connect to the cluster using ssh.</li>
+
+<pre>$ ssh your_user@ghpcc06.umassrc.org </pre>
+<li>Clean the terminal.</li>
+<pre>$ clear </pre>
+<li>Go to home directory</li>
+<pre>$ cd ~/</pre>
+<li>Create multiple directories with "-p".</li>
+<pre>$  mkdir class/week2 
+mkdir: cannot create directory `class/week2': No such file or directory
+</pre>
+<pre>$ mkdir -p class/week</pre>
+
+<li>Go to class/week2</li>
+<pre>$ cd ~/class/week2</pre>
+
+<li>Create a six column bed file</li>
+<pre>$ vi lib1.bed</pre>
+<pre>$ press i for insert mode</pre>
+<pre>chr3	3000	5000	Fgf21	0	+
+chr4	1000	7000	Swr1	0	-
+chr1	2000	3000	Gypsy	0	+
+chr2	4000	6000	Tdp43	0	-</pre>
+<li>To copy a line in vi</li>
+<pre>Press esc and Press yy on top of the line you want to copy</pre>
+<li>Paste copied line</li>
+<pre>press p</pre>
+<li>Copy 2 lines</li>
+<pre>press y2y</pre>
+<li>Delete a line</li>
+<pre>press dd</pre>
+<li>Delete four lines</li>
+<pre>press d4d</pre>
+<li>Save and exit</li>
+<pre>press esc and press :wq! and enter</pre>
+<li>Save without exit</li>
+<pre>press esc and press :w and enter</pre>
+
+<li>Copy files using FTP client: Connect to the host with FileZilla like below.
+Drag and drop the files you want to transfer from remote machine to your local or vise versa. </li>
+<br>
+<img src="content/bcw/img/filezilla.png" width="500" heigth="400"/>
+</br>
+<li>To remove the files use rm command.</li>
+<pre>$ rm file_name</pre>
+<pre>$ rm *.bed</pre>
+<li>Delete a directory if it is empty</li>
+<pre>$ rmdir directory_name</pre>
+<li>When attempting to remove a directory using a command such as the rmdir command, you may receive a prompt such as "rmdir: 'dir': Directory not empty" and be unable to delete the directory. To remove a directory that is full with other files or directories, use the below command. (pleas  be carueful using rm commands)</li>
+<pre>$ rm -rf directory_name</pre>
+<li>Get help of a command using man. To exit press q </i>
+<pre>$ man ls</pre>
+<pre>$ man rm</pre>
+<li>In order to sort the lines in a file you would use a command line like:</p>
+<pre>$ cd ~/class/week2</pre>
+<pre>$ sort -k1 lib1.bed</pre>
+<li>To ignore leading blanks in the file we use b option</li>
+<pre>$ sort -k1b lib1.bed</pre>
+<li>For numeric sort</li>
+<pre>$ sort -k1n lib1.bed</pre>
+<li>To reverse the sort</li>
+<pre>$ sort -k1n -r lib1.bed </pre>
+<pre>$ sort -k1r lib1.bed </pre>
+<li>Copy the file</li>
+<pre>$ cp lib1.bed lib2.bed</pre>
+
+<li>grep command: Search a word in all the bed files in the directory</li>
+<br>
+<a href="http://www.panix.com/~elflord/unix/grep.html">Grep Tutorial</a>
+<pre>$ grep Swr1 *.bed </pre>
+<pre>$ grep Swr1 lib1.bed </pre>
+<pre>$ grep "+" lib1.bed
+chr3	3000	5000	Fgf21	0	+
+chr1	2000	3000	Gypsy	0	+
+</pre>
+<li>Print 4th column of a bed file which are gene names</li>
+<pre>$ awk '{print $4}' lib1.bed 
+Fgf21
+Swr1
+Gypsy
+Gypsy
+Gypsy
+Gypsy
+Tdp43
+</pre>
+<li>If you have repeated genes in the file. You can use the command below to unify them</li>
+<pre>$ awk '{print $4}' lib1.bed | sort -u</pre>
+<pre>$ awk '{print $4}' lib1.bed | uniq</pre>
+<li>Or you can put the results first into a file and use the commands to unify like below</li>
+<pre>$ awk '{print $4}' lib1.bed > genenames.txt</pre>
+<pre>$ sort -u genenames.txt</pre>
+<pre>$ uniq genenames.txt</pre>
+<li>Select only + strand from the bed file and write the genenames</li>
+<pre>$ awk '{ if($6=="+" ) print $4 }' lib1.bed </pre>
+<li>Select only + strand from the bed file and write whole rows with $0</li>
+<pre>$ awk '{ if($6=="+" ) print $0 }' lib1.bed </pre>
+<li>Write first four columns of the genes in "+" strand</li>
+<pre>$ awk '{ if($6=="+" ) print $1"\t"$2"\t"$3"\t"$4 }' lib1.bed </pre>
+<li>Get the lines that the end coordinates are over 4000</li>
+<pre>$ awk '{ if( $3 > 4000 ) print $0 }' lib1.bed </pre>
+<li>Get the lines that the gene lengths are over 4000</li>
+<pre>$ awk '{ if( ($3-$2) > 2000 ) print $0 }' lib1.bed </pre>
+<li>Add end positions 10 nucleotide</li>
+<pre>$ awk '{ if($6=="+" ) print $1"\t"$2"\t"($3+10)"\t"$4 }' lib1.bed</pre>
+<li>Download a file from ucsc genome browser. Please go genome.ucsc.org and press table browser link</pre>
+<img src="content/bcw/img/ucsc1.png" width="500" heigth="400"/></br>
+<img src="content/bcw/img/ucsc2.png" width="500" heigth="400"/></br>
+<li>upload the file using your FTP client to your week2 directory and find the lengths of 3'utrs with awk. Print first 10 lines</li>
+<pre>$ awk '{ print ($3-$2) }' hg19ref.bed | head</pre>
+<li>Print with their names into a file</li>
+<pre>$ awk '{ print $4 " Len: " ($3-$2) }' hg19ref.bed > utr3len.txt</pre>
+<li>Print only first 10 lines with their names into a file</li>
+<pre>$ awk '{ print $4 " Len: " ($3-$2) }' hg19ref.bed | head > firstten.txt</pre>
+<li>Search pattern with vi using regular expressions. Try the command below.</li>
+<pre>$ vi hg19ref.bed</pre>
+<pre>/_utr3.*_r</pre>
+<pre>/chr1\t8404073\t8404227</pre>
+<li>Replace with vi; g means global</li>
+<pre>:%s/utr3/UTR3/g</pre>
+<pre>press u to undo</pre>
+<li> Pattern search with vi</li>
+<pre>:%s/_utr3.*_r/UTR3 r/g</pre>
+<pre>:%s/_utr3.*_f/UTR3 f/g</pre>
+<li> Pattern search with vi and put some of the patterns into a special varialbe \1 and usit in the replacemant. We are going to do the two lines replacement with one line code. [] anything inside of brackets will be or [fr] means f or r in a position. \([fr]\) put whatever it is into \1 variable </li>
+<pre>:%s/_utr3.*_\([fr]\)/UTR3 \1/g</pre>
+</ol>
+</br></br>
+For more vi regular expression tutorials;</br>
+ <a href="http://www.thegeekstuff.com/2009/04/vi-vim-editor-search-and-replace-examples/">http://www.thegeekstuff.com/2009/04/vi-vim-editor-search-and-replace-examples/
+</a></br>
+ <a href="https://www.youtube.com/watch?v=dsKGMxoydCc">https://www.youtube.com/watch?v=dsKGMxoydCc</a></br>
+ <a href="">http://www.softpanorama.org/Editors/Vimorama/vim_regular_expressions.shtml</a></br>
+</br>
+</br>
+<p>
+<h3>Your homework (deadline: Jul 24, Thursday 17:00pm):</h3></br> 
+<ol>
+<li>Please create “homework/week2” directory in your home folder.</li></br>
+<li>Download all intronic regions for mouse mm10 from ucsc. Upload it to ~/homework/week2 using FileZilla.</li></br>
+<li>
+Find long intronic regions that their lengths are over 10K and put the lines in positive strand to intron_watson.bed and negative ones into intron_crick.bed. 
+</li></br>
+<li>Create another file and write the lengths in the following form => gene_id Len: length  </li>
+<pre>Ex:
+NM_183838  Len: 14543
+NM_232342  Len: 53322
+...
+</pre>
+
+<li>Write the awk command/s you used into Readme.txt file in the same folder.</li></br> 
+</ol>
+</p>
+</div>
+</div>

@@ -1,0 +1,302 @@
+<br>
+<br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="http://bioinfo.umassmed.edu/index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="http://bioinfo.umassmed.edu/index.php?p=32">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                       Class Material
+                                </li>
+                </ul>
+            </div>
+</div>
+
+
+<div class="post-5027 page type-page status-publish hentry instock">
+<div class="entry">
+<h4 id="toc">Table of contents</h4>
+<ul>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#expectedlearningoutcome">expected learning outcome</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#gettingstarted">getting started</a></li>
+</ul>
+<ul>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#part1">Quantification and Differential gene expression analysis</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#p1e1">exercise 1: prepare for genomic alignment</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#p1e2">exercise 2: Quantify with the RSEM program</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#p1e3">exercise 3: Genomic alignment of RNA-Seq reads</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#p1e4">exercise 4: Differential gene expression analysis with DESeq</a></li>
+<li><a href="http://bioinfo.umassmed.edu/index.php?p=33#p1e5">Tophat2 Mapping and visualization summary</a></li>
+</ul>
+<section id="expectedlearningoutcome"/>
+<br/>
+<br/>
+<br/>
+
+<h4>expected learning outcome</h4>
+<p>To understand the basics of RNA-Seq data, how to use RNA-Seq for different objectives and to familiarize yourself with some standard software packages for such analysis.</p>
+<center><img src="content/pdf2015fall/focus_workflow_week4.jpg"></center>
+<center><img src="content/pdf2015fall/Tophat_vs_RSEM.jpg"></center>
+<section id="gettingstarted"/>
+<br/>
+<br/>
+<br/>
+<h4>getting started</h4>
+<p>Sample pooling has revolutionized sequencing. It is now possible to sequence 10s of samples together. Different objectives require different sequencing depths. Doing differential gene expression analysis requires less sequencing depth than transcript reconstruction so when pooling samples it is critical to keep the objective of the experiment in mind.</p>
+<p>In this activity we will use subsets of experimentally generated datasets. One dataset was generated for differential gene expression analysis while the other towards transcript annotation.</p>
+<p>For quantification we will use a set of data generated from the same strain as the genome reference mouse (C57BL/6J). We selected three replicates from control (wild type) and three from a knock-out strain. The idea is to find genes that are in the same pathway as the gene that were knock out. We will use a reduced genome consisting of the first 9.5 million bases of mouse chromosome 16 and the first 50.5 million bases of chromosome 7.</p>
+</section>
+<br/>
+<br/>
+<br/>  
+<section id="part1"/>
+<br/>
+<br/>
+<br/>
+<h2>Quantification and differential gene expression analysis</h2>
+<p>The main goal of this activity is to go through a standard method to obtain gene expression values and perform differential gene expression analysis from an RNA-Seq experiment.</p>
+<p>We will start by alignment and visualizing the data using the TopHat2 spliced aligner. We will then perform gene quantification using the RSEM program and finally differential gene expression analysis of the estimated counts using DESeq.</p>
+
+<p> This activity should also serve as a review of the previous two classes as you will work on the hpcc</p>
+
+<p>&nbsp;</p>
+<h2>Before you start</h2>
+<p>1. Connect to cluster using the command below with your username and password </p>
+<pre> ssh -X your_user@ghpcc06.umassrc.org</pre>
+
+<p>2. Please start an interactive job in the cluster using the command below for any of your operations in the cluster. Head node is used only for job submissions. An interactive session is a way to log in to a node and use it as if it were your local workstation for the length of the session. You may use this same script in the future whenever you want to start an work on a node and run programs in  <em> interactive session</em></p>
+<pre> /project/umw_biocore/bin/qlogin</pre>
+
+<p>3. Prepare your working directory</p>
+<pre>/project/umw_biocore/bin/class/prepWD.bash</pre>
+
+<section id="p1e1"/>
+<br/>
+<br/>
+<br/>
+<h3>Exercise 1: prepare for genomic alignment</h3>
+<p>Both TopHat and RSEM rely on bowtie to perform read alignment (similar to the BWA aligner you used in genome assembly tutorial). Bowtie like BWA uses very efficient genome compression algorithm (Burrows-Wheeler transform) that allows for quick matching of sequences with less than 3 missmatches. To use these alignments it is necessary to create the BW transform of our genome before mapping reads. The bowtie-build2 program in the Bowtie distribution creates the BW index. Change your directory to genome.quantification. Invoke the BW transform on the mm10.fa file found in the directory genome.quantification:</p>
+<p>1. First load necessary modules</p>
+<pre>module load RSEM/1.2.11</pre>
+<pre>module load tophat/2.0.9</pre>
+<pre>module load bowtie2/2.3.2</pre>
+<pre>module load samtools/0.0.19</pre>
+<pre>module load java/1.7.0_25</pre>
+
+<p>2. Build bowtie2 index files</p>
+<pre>cd ~/RNASeqWS/transcriptomics/genome.quantification</pre>
+<pre>bowtie2-build -f mm10.fa mm10</pre>
+<p>We named it mm10 (following the <a title="UCSC " href="http://genome.ucsc.edu/cgi-bin/hgGateway" target="_blank">UCSC genome browser naming convention</a>. Although we named it similarly to the full genome, this sequence file only contains a very small region of the mouse genome. Our alignment database will be called mm10, and will include partial sequences for chromosomes 7 and 16.</p>
+<p>3. In addition we also will prepare the transcriptome for <a title="RSEM README" href="http://deweylab.biostat.wisc.edu/rsem/README.html" target="_blank">RSEM</a> alignment. RSEM will align directly to the set of transcripts included (<em>ucsc.gtf</em> file). The transcript file was downloaded directly from the UCSC table browser. The file does not contain the information necessary to map isoforms to genes, we therefore compiled a table,
+<em>ucsc_into_genesymbol.rsem</em> that contains this information. To generate the necessary index files use the command below. Please not that the \ is used to span multiple lines:</p>
+
+<pre>rsem-prepare-reference \
+--gtf ucsc.gtf --transcript-to-gene-map ucsc_into_genesymbol.rsem \
+mm10.fa mm10.rsem</pre>
+<p><strong>Expected result</strong>: Your <em>genome.quantification </em>directory now should contain the following files (Tip: use ls -1):</p>
+<p><strong>Bowtie2 indeces:</strong></p>
+<pre>mm10.1.bt2
+mm10.2.bt2
+mm10.3.bt2
+mm10.4.bt2
+mm10.rev.1.bt2
+mm10.rev.2.bt2</pre>
+<p><strong>Bowtie indeces:</strong></p>
+<pre>mm10.rsem.ti
+mm10.rsem.grp
+mm10.rsem.chrlist
+mm10.rsem.transcripts.fa
+mm10.rsem.seq
+mm10.rsem.idx.fa
+mm10.rsem.1.ebwt
+mm10.rsem.2.ebwt
+mm10.rsem.3.ebwt
+mm10.rsem.4.ebwt
+mm10.rsem.rev.1.ebwt
+mm10.rsem.rev.2.ebwt</pre>
+<p>&nbsp;</p>
+<p><em>Can you tell what are these indeces for? What is the difference between the fasta files used for each index set?</em></p>
+
+<br>
+
+<section id="p1e2"/>
+<br/>
+<br/>
+<br/>
+
+<h3>exercise 2 Quantify with the RSEM program</h3>
+<p><a title="RSEM" href="http://deweylab.biostat.wisc.edu/rsem/" target="_blank">RSEM</a> depends on an existing annotation and will only scores transcripts that are present in the given annotation file. We will compare the alignments produced by RSEM and tophat and this will become clear.</p>
+<p>The first step is to prepare the transcript set that we will quantify. We selected the <a title="ucsc gene table" href="http://genome.ucsc.edu/cgi-bin/hgTables?hgsid=359712943&clade=mammal&org=Mouse&db=mm10&hgta_group=genes&hgta_track=knownGene&hgta_table=0&hgta_regionType=genome&position=chr6%3A113001853-113229210&hgta_outputType=bed&hgta_outFileName=hg19.ensembl.bed" target="_blank">UCSC genes</a> which is a very comprehensive, albeit a bit noisy dataset. As with all the data in this activity we will only use the subset of the genes that map to the genome regions we are using.</p>
+<h4>2.1 Calculate expression</h4>
+<p>RSEM now is ready to align and then attempt to perform read assignment and counting for each isoform in the file provided above. You must process each one of the 6 libraries:</p>
+
+<pre>cd ~/RNASeqWS/transcriptomics</pre>
+<pre>mkdir rsem
+
+rsem-calculate-expression --paired-end -p 2 \
+ --output-genome-bam fastq.quantification/control_rep1.1.fq \
+fastq.quantification/control_rep1.2.fq genome.quantification/mm10.rsem rsem/ctrl1.rsem</pre>
+<p>And similarly for each of the other 5 libraries</p>
+<div class="toggle-content"><p></p>
+<pre>
+/project/umw_biocore/bin/class/runRSEM.bash
+</pre>
+<p></p></div> 
+<p>You should take the time to familiarize yourself with the output</p>
+
+
+<h4>2.2 Create consolidated table</h4>
+<p>In the bin directory (we provide a simple script to take all the independent RSEM output and combine it into a single table, which is then useful for inspection and ready for differential gene expression analysis.</p>
+<p>To find out what the script does you may type the following command in the transcriptomics directory</p>
+<pre>cd ~/RNASeqWS/transcriptomics</pre>
+<pre>perl bin/rsem.to.table.pl -help</pre>
+<p>We will generate two tables with isoform and gene level expression:</p>
+<pre>perl bin/rsem.to.table.pl -out rsem.gene.summary.count.txt -indir rsem -gene_iso genes -quantType expected_count
+perl bin/rsem.to.table.pl -out rsem.isoforms.summary.count.txt -indir rsem -gene_iso isoforms -quantType expected_count</pre>
+<p>You should now take the time to inspect these tables, find genes that look affected by the experiment.</p>
+<h4>2.3 Visualize the raw data:</h4>
+<p>We are now ready to look at the data. Download the IGV program from the <a href="http://www.broadinstitute.org/igv">IGV site</a> and transfer your files from the hpcc to your laptop. In general you will not transfer the files. There are ways to access the files from your dekstop or laptop directly at the HPCC, we'll cover this later. Since the files are very small transfer time will not be a problem. Use Filezila or the </em>scp</em> command if you are on a mac, to copy the files onto your laptop/desktop, please ensure you note to which directory you transfer the files as later you will need to load them into IGV.</p>
+
+<p> Launch the IGV browser, and use the <em>File -> load</em> to load the files onto the browser. Load only one or two .bam files to begin with. Don't forget to choose mm10 as a genome build from the corner </p>
+
+<p>A few genes are good examples of differentially expressed genes. For example the whole region around the key <em>Fgf21</em> gene is upregulated in experiment vs controls, while the gene <em>Crebbp</em> is downregulated in experiments vs controls. To point your browser to either gene just type or copy the name of the gene in the location box at the top.</p>
+<p>We will revisit these genes below when we do differential gene expression.</p>
+
+<br/>
+<section id="p1e2"/>
+<br/>
+<br/>
+<br/>
+
+<h3>exercise 3: Genome alignment of RNA-seq reads</h3>
+<p>The <em>fastq.quantification</em> folder contains a relative small set of illumina sequencing reads. We will examine this set by first directly mapping to the reduced mouse genome.</p>
+<p>Make sure you are in the transcriptomics directory for this activity. <em>genome.quantification</em>, <em>fastq.quantification</em> should be subdirectories. Check this before you proceed.</p>
+<p>1. To avoid cluttering the workspace we will direct the output of each exercise to its own directory. In this case for example:</p>
+<pre>mkdir ~/RNASeqWS/transcriptomics/tophat</pre>
+<p>2. Then align each of the libraries to the genome. The <em>fastq.quantification</em> subdirectory contains six different libraries, three for a control experiment from wild type mouse liver and from mouse that are deficient in two different proteins. Each genotype was sequenced in triplicates using paired-end 50 base paired reads.</p>
+<p>To first explore the data visually in IGV, we’ll use the TopHat2 aligner to map these reads to our reduced genome:</p>
+<p>You have to be in this directory to run tophat alignment commands</p>
+<pre>cd ~/RNASeqWS/transcriptomics</pre>
+
+<pre>tophat2 --library-type fr-firststrand --segment-length 20 -G  genome.quantification/ucsc.gtf \
+-o  tophat/ctrl1 genome.quantification/mm10 fastq.quantification/control_rep1.1.fq \
+fastq.quantification/control_rep1.2.fq</pre>
+<p>&nbsp;</p>
+<p>And using this command as a template, align the other libraries or use the script below (Your homework)</p>
+<div class="toggle-content"><p></p>
+<pre>
+/project/umw_biocore/bin/class/runTophat.bash
+</pre>
+<p></p></div> 
+<p>&nbsp;</p>
+<p><em>Question: What percent of reads were mapped for the library?</em></p>
+<div class="toggle-content"><br>
+Check the tophat reports for the library you aligned, in particular the align_summary.txt file <br>
+</div> 
+<p>4. Tophat always reports its alignment in a file named “accepted_hits.bam”. To make things clear we’ll move this files onto a clean directory. Move the files by, for example, doing</p>
+<pre>mv tophat/ctrl1/accepted_hits.bam tophat/ctrl1.bam
+</pre>
+<p>For the rest of the libraries (Your homework)</p>
+<pre>/project/umw_biocore/bin/class/moveBamFiles.bash 
+</pre>
+<p>To visualize the alignments we sort this file and generate indexes (for rapid data access):</p>
+<pre>cd ~/RNASeqWS/transcriptomics/tophat</pre>
+<pre>
+samtools sort ctrl1.bam ctrl1.sorted
+samtools index ctrl1.sorted.bam</pre>
+<p>and with all the other libraries: (Homework)</p>
+<pre>/project/umw_biocore/bin/class/makeSortIndex.bash</pre>
+<div class="toggle-content"><p></p>
+<p></p></div>
+<p>Now we can compare the rsem and tophat alignments on IGV to see the difference </p>
+
+
+
+<section id="p1e4"/>
+<br/>
+<br/>
+<br/>
+
+<h3>exercise 4: Differential gene expression analysis with DESeq</h3>
+<p>DESeq is an R package available via Bioconductor and is designed to normalise count data from high-throughput sequencing assays such as RNA-Seq and test for differential expression.</p>
+
+<p>Please finish the tutorial to learn how to run R commands</br>
+<a href="tryr.codeschool.com">tryr.codeschool.com</a></p>
+
+<p>To run R you just need to type the following in the command line:</p>
+<pre>module load R/3.0.1
+Rscript  bin/rsem.quant.r</pre></p>
+<p>We will revisit this R section in the 6th week.</p>
+
+Note:In the R code change the naming of the control and expr according to the order of colnames(d). 
+<pre>
+colData = as.data.frame((colnames(d)));
+colData[1,2] = "control";
+colData[2,2] = "expr";
+colData[3,2] = "expr";
+colData[4,2] = "control";
+colData[5,2] = "expr";
+colData[6,2] = "control";
+</pre></p>
+</div> 
+</div> 
+
+<section id="p1e5"/>
+<br/>
+<br/>
+<br/>
+<div>
+<h4>Tophat2 Mapping & Visualization Summary:</h4>
+<p>
+1. Map all the libraries using Tophat2.</br></br>
+
+2. Download and install igv to your laptops</br>
+http://www.broadinstitute.org/software/igv</br></br>
+
+3. sort and make index files of your bam files using the commands below. In this way you can visualize them in IGV.
+</br></br>
+a. # Load the module</br>
+<pre>
+module load samtools/0.0.19</pre>
+</br></br>  
+
+b.  # Go to the directory that we are going to use</br> 
+<pre>
+cd ~/RNASeqWS/transcriptomics
+</pre>
+</br></br>
+
+c. #Use samtools sort function to sort your bam file and give a new name ctrl1.sorted.bam
+</br>
+<pre>
+samtools sort -f tophat/th.quant.ctrl1/accepted_hits.bam tophat/ctrl1.sorted.bam
+</pre>
+</br></br>
+d. #Use samtools index function to be able visualize the bam file in IGV. This will make a tophat/ctrl1.sorted.bam.bai file.
+</br>
+<pre>
+samtools index  tophat/ctrl1.sorted.bam
+</pre>
+</br></br>
+
+4. Copy *.sorted.bam and *.sorted.bam.bai files to your computer using FileZilla. These files supposed to be under ~/RNASeqWS/transcriptomics/tophat directory. 
+</br></br>
+
+5. Open IGV select mouse (mm10) from the corner.
+</br></br>
+6. Open your bam file using File => Load from file
+</br></br>
+
+7. Do the steps 3-6 for other libraries. 
+</br></br>
+8. Go to fgf21 gene from entering gene name to the coordinate box at the top. 
+</p>
+</div>
+
+
+</body></html>

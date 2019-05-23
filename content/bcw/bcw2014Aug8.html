@@ -1,0 +1,510 @@
+
+<br/>
+   <div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="#">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="index.php?p=4">Workshops</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                        BCW
+                                </li>
+                </ul>
+            </div>
+</div>
+<div id="middle100"><!--middle start -->
+<div id="middle"><!--middle -->
+</br>
+<h3>Six weeks basic computing workshop</h3>
+</br>
+
+<h4>
+    Week 5: R Studio and R Basics
+</h4>
+<ol>
+<li>Asignment</li>
+<pre><code class="r">
+var1 &lt;- 5
+var2 &lt;- 3
+var2
+</code></pre>
+
+<pre><code>[1] 3
+</code></pre>
+
+<pre><code class="r">var3 &lt;-  c(3,5,7,9)
+</code></pre>
+
+<li>#Basic data types: 
+#Numbers
+</li>
+<pre><code class="r">
+a &lt;-5
+
+b &lt;- sqrt(a*a+3)
+
+#list of variables
+ls()
+</code></pre>
+
+<pre><code>[1] &quot;a&quot;    &quot;b&quot;    &quot;var1&quot; &quot;var2&quot; &quot;var3&quot;
+</code></pre>
+
+<pre><code class="r">#Vectors
+a &lt;- c(10,4,30,2,50)
+
+a[1]
+</code></pre>
+
+<pre><code>[1] 10
+</code></pre>
+
+<pre><code class="r">a[2]
+</code></pre>
+
+<pre><code>[1] 4
+</code></pre>
+
+<pre><code class="r">a[0]
+</code></pre>
+
+<pre><code>numeric(0)
+</code></pre>
+
+<pre><code class="r">numeric(0)
+</code></pre>
+
+<pre><code>numeric(0)
+</code></pre>
+
+<pre><code class="r">a[5]
+</code></pre>
+
+<pre><code>[1] 50
+</code></pre>
+
+<pre><code class="r">a[6]
+</code></pre>
+
+<pre><code>[1] NA
+</code></pre>
+
+<pre><code class="r">a &lt;- numeric(10)
+b&lt;-seq(1:10)
+
+a+1
+</code></pre>
+
+<pre><code> [1] 1 1 1 1 1 1 1 1 1 1
+</code></pre>
+<li>
+Strings
+</li>
+<pre><code class="r">
+
+a &lt;- &quot;Exper&quot;
+a
+</code></pre>
+
+<pre><code>[1] &quot;Exper&quot;
+</code></pre>
+
+<pre><code class="r">b &lt;- c(&quot;Exper&quot;,&quot;Control&quot;)
+b
+</code></pre>
+
+<pre><code>[1] &quot;Exper&quot;   &quot;Control&quot;
+</code></pre>
+
+<pre><code class="r">b[1]
+</code></pre>
+
+<pre><code>[1] &quot;Exper&quot;
+</code></pre>
+
+<pre><code class="r">typeof(a)
+</code></pre>
+
+<pre><code>[1] &quot;character&quot;
+</code></pre>
+<li>#Factors</li>
+<pre><code class="r">
+conds1&lt;-c(&quot;Exper&quot;,&quot;Exper&quot;,&quot;Control&quot;,&quot;Control&quot;)
+conds &lt;- factor(c(&quot;Exper&quot;,&quot;Exper&quot;,&quot;Control&quot;,&quot;Control&quot;))
+
+#Data frames
+a &lt;- c(1,2,3,4)
+b &lt;- c(2,4,6,8)
+conds &lt;- factor(c(&quot;Exper&quot;,&quot;Exper&quot;,&quot;Control&quot;,&quot;Control&quot;))
+
+genelevels &lt;- data.frame(a, b, conds)
+
+colnames( genelevels ) &lt;- c(&quot;library1&quot;, 
+                            &quot;library2&quot;,
+                            &quot;conditions&quot;)
+
+genelevels &lt;- data.frame(lib1=a, 
+                         lib2=b, 
+                         f=conds)
+
+genelevels$lib1
+</code></pre>
+
+<pre><code>[1] 1 2 3 4
+</code></pre>
+
+<pre><code class="r">genelevels$lib2
+</code></pre>
+
+<pre><code>[1] 2 4 6 8
+</code></pre>
+
+<pre><code class="r">genelevels$f
+</code></pre>
+
+<pre><code>[1] Exper   Exper   Control Control
+Levels: Control Exper
+</code></pre>
+<li>
+For comments use # symbol:<br>
+# These are the same<br> 
+#genelevels[2:4, &quot;lib1&quot;] ==== genelevels$lib1[2:4]<br>
+</li>
+<pre><code class="r">
+genelevels[2:4, &quot;lib1&quot;]
+</code></pre>
+
+<pre><code>[1] 2 3 4
+</code></pre>
+
+<pre><code class="r">genelevels$lib1[2:4]
+</code></pre>
+
+<pre><code>[1] 2 3 4
+</code></pre>
+<li>#Factors</li>
+<pre><code class="r">
+genelevels[2:4, c(&quot;lib1&quot;, &quot;f&quot;)]
+</code></pre>
+
+<pre><code>  lib1       f
+2    2   Exper
+3    3 Control
+4    4 Control
+</code></pre>
+
+<li>Only Experiments
+</li>
+<pre><code class="r">
+genelevels[genelevels$f == &quot;Exper&quot;, ]
+</code></pre>
+
+<pre><code>  lib1 lib2     f
+1    1    2 Exper
+2    2    4 Exper
+</code></pre>
+
+<pre><code class="r">genelevels[1,]
+</code></pre>
+
+<pre><code>  lib1 lib2     f
+1    1    2 Exper
+</code></pre>
+
+<pre><code class="r">genelevels[3,]
+</code></pre>
+
+<pre><code>  lib1 lib2       f
+3    3    6 Control
+</code></pre>
+
+<pre><code class="r">genelevels[3,2]
+</code></pre>
+
+<pre><code>[1] 6
+</code></pre>
+
+<li>Get a summary
+</li>
+<pre><code class="r">
+summary(genelevels)
+</code></pre>
+
+<pre><code>      lib1           lib2           f    
+ Min.   :1.00   Min.   :2.0   Control:2  
+ 1st Qu.:1.75   1st Qu.:3.5   Exper  :2  
+ Median :2.50   Median :5.0              
+ Mean   :2.50   Mean   :5.0              
+ 3rd Qu.:3.25   3rd Qu.:6.5              
+ Max.   :4.00   Max.   :8.0              
+</code></pre>
+
+<li>
+Get the dimensions of a matrixx
+</li>
+
+<pre><code class="r">
+
+dim(genelevels)
+</code></pre>
+
+<pre><code>[1] 4 3
+</code></pre>
+
+<pre><code class="r">length(a)
+</code></pre>
+
+<pre><code>[1] 4
+</code></pre>
+
+<li>
+#Logical variables
+</li>
+<pre><code class="r">
+var4 &lt;- c(TRUE, FALSE, TRUE, FALSE)
+genelevels[var4,]
+</code></pre>
+
+<pre><code>  lib1 lib2       f
+1    1    2   Exper
+3    3    6 Control
+</code></pre>
+<li>Factors</li>
+<pre><code class="r">
+a &lt;- factor(c(&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;C&quot;,&quot;A&quot;,&quot;C&quot;))
+results &lt;- table(a)
+results
+</code></pre>
+
+<pre><code>a
+A B C 
+4 3 2 
+</code></pre>
+
+<pre><code class="r">a &lt;- c(&quot;Sometimes&quot;,&quot;Sometimes&quot;,&quot;Never&quot;,&quot;Always&quot;,&quot;Always&quot;,&quot;Sometimes&quot;,&quot;Sometimes&quot;,&quot;Never&quot;)
+b &lt;- c(&quot;Maybe&quot;,&quot;Maybe&quot;,&quot;Yes&quot;,&quot;Maybe&quot;,&quot;Maybe&quot;,&quot;No&quot;,&quot;Yes&quot;,&quot;No&quot;)
+results &lt;- table(a,b)
+results
+</code></pre>
+
+<pre><code>           b
+a           Maybe No Yes
+  Always        2  0   0
+  Never         0  1   1
+  Sometimes     2  1   1
+</code></pre>
+
+<li>Matrix</li>
+<pre><code class="r">
+occur &lt;- matrix(c(4,3,2,5,4,5),
+                ncol=3,byrow=TRUE)
+occur
+</code></pre>
+
+<pre><code>     [,1] [,2] [,3]
+[1,]    4    3    2
+[2,]    5    4    5
+</code></pre>
+
+<pre><code class="r">libs&lt;-matrix(c(50,20,65,40),ncol=2,byrow=TRUE)
+rownames(libs)&lt;-c(&quot;lib1&quot;,&quot;lib2&quot;)
+colnames(libs)&lt;-c(&quot;control1&quot;,&quot;exper1&quot;)
+libtable &lt;- as.table(libs)
+
+mydataframe&lt;-data.frame(libs)
+</code></pre>
+<li>
+Basic Operations
+</li>
+<pre><code class="r">
+a &lt;- c(1,2,3,4)
+a
+</code></pre>
+
+<pre><code>[1] 1 2 3 4
+</code></pre>
+
+<pre><code class="r">a + 5
+</code></pre>
+
+<pre><code>[1] 6 7 8 9
+</code></pre>
+
+<pre><code class="r">mydataframe - 10
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1       40     10
+lib2       55     30
+</code></pre>
+
+<pre><code class="r">mydataframe*4
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1      200     80
+lib2      260    160
+</code></pre>
+
+<pre><code class="r">mydataframe/5
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1       10      4
+lib2       13      8
+</code></pre>
+
+<pre><code class="r">b &lt;- mydataframe - 10
+
+sqrt(mydataframe)
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1    7.071  4.472
+lib2    8.062  6.325
+</code></pre>
+
+<pre><code class="r">exp(mydataframe)
+</code></pre>
+
+<pre><code>      control1    exper1
+lib1 5.185e+21 4.852e+08
+lib2 1.695e+28 2.354e+17
+</code></pre>
+
+<pre><code class="r">log(mydataframe)
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1    3.912  2.996
+lib2    4.174  3.689
+</code></pre>
+
+<pre><code class="r">exp(log(a))
+</code></pre>
+
+<pre><code>[1] 1 2 3 4
+</code></pre>
+
+<pre><code class="r">c &lt;- (a + sqrt(a))/(exp(2)+1)
+c
+</code></pre>
+
+<pre><code>[1] 0.2384 0.4070 0.5641 0.7152
+</code></pre>
+
+<pre><code class="r">a + b
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1       41     13
+lib2       57     34
+</code></pre>
+
+<pre><code class="r">a*b
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1       40     30
+lib2      110    120
+</code></pre>
+
+<pre><code class="r">a/b
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1  0.02500 0.3000
+lib2  0.03636 0.1333
+</code></pre>
+
+<pre><code class="r">(a+3)/(sqrt(1-b)*2-1)
+</code></pre>
+
+<pre><code>Warning: NaNs produced
+Warning: NaNs produced
+</code></pre>
+
+<pre><code>     control1 exper1
+lib1      NaN    NaN
+lib2      NaN    NaN
+</code></pre>
+
+<pre><code class="r">a &lt;- c(1,2,3)
+b &lt;- c(10,11,12,13)
+a+b
+</code></pre>
+
+<pre><code>Warning: longer object length is not a multiple of shorter object length
+</code></pre>
+
+<pre><code>[1] 11 13 15 14
+</code></pre>
+
+<li>open a file</li>
+<pre>
+file&lt;-&quot;/project/umw_biocore/genes.tsv&quot;
+rsem&lt;- read.table(file, header=TRUE, row.names=1)
+</pre>
+<li>learn column names</li>
+<pre>
+colnames(rsem)
+</pre>
+<li>Select rows 2 to 5 and columns 10 to 13</li>
+<pre>
+rsem[ 2:5 , 10:13 ]
+</pre>
+<li>Select gene Lage3 and columns 2 to 5</li>
+<pre>
+rsem[&quot;Lage3&quot;, 2:5]
+</pre>
+<li>select some genes and libraries</li>
+<pre>
+rsem[c(&quot;Brd7&quot;,&quot;Lage3&quot;), c(&quot;J2c.rep3&quot;, &quot;J2c.rep2&quot;)]
+</pre>
+
+<li>select 6 libraries/columns</li>
+mydata&lt;-rsem[, c(&quot;ALAB.rep1&quot;,&quot;ALAB.rep2&quot;,&quot;ALAB.rep3&quot;, 
+                 &quot;hfd.wt.rep1&quot;,&quot;hfd.wt.rep2&quot;, &quot;hfd.wt.rep3&quot;)]
+</li>
+</code></pre>
+
+<p>
+<h3>Your homework (deadline: Aug 14, Thursday 17:00pm):</h3></br>
+<ol>
+<li>Please create “homework/week5” directory in your home folder in rstudio.</li></br>
+<li>Wrtie the answers into week5.R file .</li></br>
+<li>
+Read /project/umw_biocore/genes.tsv file.  Get help on the command read.table. What is the default missing value and decimal place
+argument. Please write them within comments.
+</li>
+<li>
+Select J1c.rep1, J1c.rep2, J1c.rep3 columns and find maximum and minumum values for each library. 
+</li>
+<li>
+Using selected columns, find the genes that their read counts are over 400 in J1c.rep1 library.
+Hint: You are going to use > rather than == like in
+genelevels[genelevels$lib1 > 400, ]
+</li>
+<li>
+Make another data frame by selecting  ALAB.rep1, ALAB.rep2, ALAB.rep3 in adition to the ones we selected before.
+Find average read counts using replicas for J1c and ALAB per gene.
+Hint: (rep1+rep2+rep3)/3  
+</li>
+<li>
+Make a log10 plot using these average gene counts.
+Hint: use plot function with log10 like below;
+plot(log10(genelevels))
+</li>
+</ol>
+</p>
+</div>
+</div>
+
+

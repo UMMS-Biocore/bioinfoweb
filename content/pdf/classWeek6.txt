@@ -1,0 +1,75 @@
+url <-  "https://galaxyweb.umassmed.edu/pub/class/data.tsv"
+#install a package
+#install.packages("RCurl")
+library(RCurl)
+file <- textConnection(getURL(url))
+
+# or download the file and read like below
+# file <- "~/Downloads/data.tsv"
+data <- read.table(file,sep="\t", header=TRUE, row.names=1)
+
+columns <- c("exper_rep1","exper_rep2","exper_rep3",
+             "control_rep1","control_rep2","control_rep3")
+
+View(data)
+
+data <- data[, columns]
+
+avgX <- rowMeans(data[, c("exper_rep1","exper_rep2","exper_rep3")])
+#or
+#avgX <- rowMeans(data[, 1:3])
+
+avgY <- rowMeans(data[, c("control_rep1","control_rep2","control_rep3")])
+
+avgall <- cbind(avgX, avgY)
+
+colnames(avgall) <- c("Treat", "Control")
+
+gdat<-data.frame(avgall)
+
+ggplot() +
+    geom_point(data=gdat, aes_string(x="Treat", y="Control"),
+               colour="grey", alpha=6/10, size=3) +
+    scale_x_log10() +scale_y_log10()
+
+head(data)
+conds <- factor(c("Treat", "Treat", "Treat", "Control", "Control", "Control") )
+    
+source("https://galaxyweb.umassmed.edu/pub/class/funcs.R")
+
+de_res <- runDESeq(data, columns, conds,
+          padj=0.01, log2FoldChange=2, non_expressed_cutoff=10)
+
+#dim(de_res$res_selected)
+
+#write.table(rownames(de_res$res_detected), "~/Downloads/deres.txt",  
+#    quote = FALSE, col.names = FALSE, row.names=FALSE)
+
+overlaid_data <- overlaySig(gdat, de_res$res_selected)
+
+#head(overlaid_data)
+
+ggplot() +
+    geom_point(data=overlaid_data, aes_string(x="Treat", y="Control",
+                     colour="Legend"), alpha=6/10, size=3) +
+    scale_colour_manual(values=c("All"="darkgrey","Significant"="red"))+
+    scale_x_log10() +scale_y_log10()
+
+
+sel_data<-data[rownames(de_res$res_selected),]
+dim(sel_data)
+norm_data<-getNormalizedMatrix(sel_data, method="TMM")
+
+ld <- log2(sel_data+0.1)
+cldt <- scale(t(ld), center=TRUE, scale=TRUE);
+distance<-dist(cldt, method = "euclidean")
+plot(hclust(distance, method = "complete"),
+     main="Euclidean", xlab="")
+
+cld <- t(cldt)
+heatmap.2(cld, Rowv=TRUE,dendrogram="column",
+          Colv=TRUE, col=redblue(256),labRow=NA,
+          density.info="none",trace="none", cexCol=0.8);
+
+
+

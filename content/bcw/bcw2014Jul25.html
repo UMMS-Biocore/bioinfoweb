@@ -1,0 +1,126 @@
+</br>
+<div class="row clearfix">
+            <div></div>
+                <div class="col-md-12 column">
+                        <ul class="breadcrumb">
+                                <li>
+                                        <a href="index.php">Home</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="#">Training</a> <span class="divider">/</span>
+                                </li>
+                                <li>
+                                        <a href="index.php?p=4">Workshops</a> <span class="divider">/</span>
+                                </li>
+                                <li class="active">
+                                        BCW
+                                </li>
+                </ul>
+            </div>
+</div>
+
+<div id="middle100"><!--middle start -->
+<div id="middle"><!--middle -->
+</br>
+<h3>Six weeks basic computing workshop</h3>
+</br>
+
+<h4>
+    Week 3: Awk, grep, make, UCSC Table Browser, bed12 file and bedtools
+</h4>
+($ signs at the begining of the command lines indicate after $ is a command)
+<ol>
+<li>Connect to the cluster using ssh.</li>
+
+<pre>$ ssh your_user@ghpcc06.umassrc.org </pre>
+<li>Prepare your working directory.</li>
+<pre>$ clear </pre>
+<pre>$ mkdir ~/class/week3</pre>
+<pre>$ cd ~/class/week3</pre>
+<li>We can install bedtools into our home. Before you install bedtools into your home directory you may want to check if it is exist in the system or not and its version. To check if it is exist;</li>
+<pre>$ bedtools --version </pre>
+<p>
+If you can see a version and you think it is sufficient for your purpose, you don't have to install you can skip the steps below and directly start using it.
+</p>
+<li>We used wget command to download the bedtools into our directory.</li>
+<pre>
+$ wget http://bedtools.googlecode.com/files/BEDTools.v2.17.0.tar.gz
+</pre>
+<li>After we downloaded the latest version of bedtools, unpack it using the command below;</li>
+
+<pre>$ tar xvfz BEDTools.v2.17.0.tar.gz</pre>
+
+<li>Enter opened directory to compile the source.</li>
+<pre>$ cd bedtools-2.17.0</pre>
+<li>To be able to compile the source you need to use gcc. If make is not working in your system. Please install gcc or load it into your system. Check available modules</li>
+<pre>$ module avail</pre>
+<li>Load gcc module</li>
+<pre>$ module load gcc/4.8.1</pre>
+<li>You are ready to compile the code using `make`. you can also read README or INSTALL files to learn more about installation. 
+</li>
+<pre>$ make</pre>
+<li>Download repeat masker and refseq annotations for mm10</pre>
+<br>
+<img src="content/bcw/img/mm10_rmsk.png" width="500" heigth="400"/>
+</br>
+<br>
+<img src="content/bcw/img/mm10_annot.png" width="500" heigth="400"/>
+</br>
+
+<li>Upload them using FileZilla to your ~/class/week3/</pre>
+<li>Add the path of the bin directory to your PATH. Either using export PATH or .bashrc file. To use export;</li>
+<pre>export PATH=$PATH:/home/ak97w/class/week3/bedtools-2.17.0/bin</pre>
+<li>or ~/.bashrc file</li>
+<pre>$ vi ~/.bashrc
+press i
+export PATH=$PATH:/home/ak97w/class/week3/bedtools-2.17.0/bin
+press :wq!
+</pre>
+<li>To add ~/.bashrc to your environmental variables </li>
+<pre>source  ~/.bashrc</pre>
+<li>Now bedtools should run without full path</li>
+<pre>$ bedtools</pre>
+<li>We want to select tRNA in our mm10_rmsk.bed repeat masker file</li>
+<pre>$ grep tRNA mm10_rmsk.bed > mm10_tRNA.bed</pre>
+<li>
+Now I want to find tRNAs that are inside of the genes to findout distances to transcription start sites of the RNAs
+</li>
+<pre>$ intersectBed -a mm10_tRNA.bed -b mm10_annot.bed -wao > mm10_tRNA_annot_intersect.tsv</pre>
+<p>
+When we look at the output file. As you can see, the tRNAs overlapped with genes are in the same lines. The columns after column 7 is coming from the annotaion file.
+</p>
+<li>To make the distance calculations simple, I will just select the tRNAs and genes on watson strand </li>
+<pre>$ grep "+.*+"  mm10_tRNA_annot_intersect.bed > mm10_tRNA_annot_intersect_pp.bed</pre>
+<li>To find the distance between the 5' end of tRNAs and gene start sites</li>
+<pre>$ awk '{print $4" dist:"($8-$2)"\t geneId:"$10}'  mm10_tRNA_annot_intersect_pp.bed</pre>
+<li>To submit an interactive job in the cluster to do computain in the cluster please use qlogin</li>
+<pre>$ /project/umw_biocore/bin/qlogin</pre>
+<li>
+If you want to monitor the jobs you are running
+</li>
+<pre>$ bjobs</pre>
+<li>To list the jobs you recently run</li>
+<pre>$ bjobs -a</pre>
+<li>To submit a job</p>
+<pre>$  /project/umw_biocore/bin/r "your_command" a_name_for_command</pre>
+<pre>$  /project/umw_biocore/bin/r "ls -l" myls</pre>
+
+<p>
+<h3>Your homework (deadline: Jul 31, Thursday 17:00pm):</h3></br> 
+<ol>
+<li>Please create “homework/week3” directory in your home folder.</li></br>
+<li>Download all exonic regions for mouse mm10 from ucsc. Upload it to ~/homework/week3 using FileZilla.</li></br>
+<li>
+Find exonic repeat regions and report their distances to 3' ends of the exons for both strands. 
+</li></br>
+<pre>Ex:
+Repeat: Alu1 GeneId: NM_183838  Distance: 14 Strand:+
+Repeat: Alu2 GeneId: NM_232342  Distance: 30 Strand:-
+...
+</pre>
+
+<li>Write the awk command/s you used into Readme.txt file in the same folder.</li></br> 
+</ol>
+</p>
+</div>
+</div>
